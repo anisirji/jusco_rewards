@@ -24,17 +24,25 @@ async function writeDb(table, fields, values) {
   }
 }
 
-async function readDb(table) {
-  const sql = `SELECT * FROM ${table}`;
-
+async function readDbs(table, condition) {
+  const { field, value } = condition;
+  const sql = `SELECT * FROM ${table} WHERE ${field}='${value}'`;
+  console.log(sql);
   try {
     const ff = await pool.execute(sql);
     const [data, info] = ff;
-    return {
-      flag: true,
-      message: "Successfully got the data",
-      data: data,
-    };
+    if (data.length > 0) {
+      return {
+        flag: true,
+        message: "Successfully got the data",
+        data: data,
+      };
+    } else {
+      return {
+        flag: false,
+        message: "no data found",
+      };
+    }
   } catch (e) {
     return {
       flag: false,
@@ -43,6 +51,31 @@ async function readDb(table) {
   }
 }
 
+async function readDb(table) {
+  const sql = `SELECT * FROM ${table}`;
+
+  try {
+    const ff = await pool.execute(sql);
+    const [data, info] = ff;
+    if (data.length > 0) {
+      return {
+        flag: true,
+        message: "Successfully got the data",
+        data: data,
+      };
+    } else {
+      return {
+        flag: false,
+        message: "no data found",
+      };
+    }
+  } catch (e) {
+    return {
+      flag: false,
+      message: `encountered error: ${e.message}`,
+    };
+  }
+}
 //use to convert array of data into sql commands ... ignore this
 function convertToSql(data, l) {
   let ff = "";
@@ -58,4 +91,4 @@ function convertToSql(data, l) {
   return ff;
 }
 
-module.exports = { writeDb, readDb };
+module.exports = { writeDb, readDb, readDbs };
