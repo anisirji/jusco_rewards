@@ -5,13 +5,14 @@ async function login({ username, password }) {
     field: "username",
     value: username,
   });
-  //   console.log(check);
+  console.log(check);
   if (check.flag) {
     const passCheck = check.data[0].password == password;
     if (passCheck) {
       return {
         flag: true,
         token: check.data[0].token,
+        role: check.data[0].user_role,
       };
     } else {
       return {
