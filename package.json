@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "file-saver": "^2.0.5",
+    "react-export-excel": "^0.5.3",
+    "sheetjs-style": "^0.15.8",
     "uuid": "^9.0.0"
   }
 }

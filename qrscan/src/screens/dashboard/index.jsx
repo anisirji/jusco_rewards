@@ -1,4 +1,5 @@
 import {
+  Button,
   Table,
   TableBody,
   TableCell,
@@ -8,10 +9,26 @@ import {
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import axios from "axios";
+import FileSaver from "file-saver";
 import React, { useEffect, useState } from "react";
+import XLSX from "sheetjs-style";
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
+
+  const exportData = async () => {
+    const fileType =
+      "application/vnd.openxlmformats-officedocument.spreadsheetml.sheet;charset=UTF=8";
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const k = new Blob([excelBuffer], {
+      type: fileType,
+    });
+
+    FileSaver.saveAs(k, "data.xlsx");
+  };
 
   useEffect(() => {
     const getData = async () => {
@@ -31,6 +48,18 @@ const Dashboard = () => {
 
   return (
     <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "start",
+          padding: 10,
+        }}
+      >
+        <Button variant="contained" onClick={exportData}>
+          save data
+        </Button>
+      </div>
+
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
