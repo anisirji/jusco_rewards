@@ -1,21 +1,20 @@
-import React, { useState } from "react";
-import { styles } from "./style";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
+import FormControl from "@mui/material/FormControl";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import InputLabel from "@mui/material/InputLabel";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import Paper from "@mui/material/Paper";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { styles } from "./style";
 
 export default function () {
   const [creds, setCreds] = useState({ username: "", password: "" });
@@ -40,7 +39,7 @@ export default function () {
       const role = res.data.role;
       console.log(res);
       console.log(role);
-      if (role == "admin") navigate("/adminDashboard");
+      if (role == "admin") navigate("/dashboard");
       else if (role == "operator") navigate("/scanQr");
     });
   };

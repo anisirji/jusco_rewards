@@ -1,9 +1,10 @@
-import ScanQr from "./screens/qrScan/ScanQr";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import logo from "./Images/logo.png";
-import { BrowserRouter, Router, Routes, Route } from "react-router-dom";
-import BasicTable from "./screens/questions";
+import Dashboard from "./screens/dashboard";
 import Login from "./screens/login";
+import ScanQr from "./screens/qrScan/ScanQr";
+import BasicTable from "./screens/questions";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/scanQr" element={<ScanQr />} />
           <Route path="/questions" element={<BasicTable />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </BrowserRouter>
       {/* <ScanQr /> */}

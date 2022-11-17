@@ -1,16 +1,28 @@
-import React from "react";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
 import IconButton from "@mui/material/IconButton";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
 import Stack from "@mui/material/Stack";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { style } from "./style";
-const Column = ({ Q, M, i }) => {
+const Column = ({ Q, M, i, id }) => {
+  const [points, setPoints] = useState(-1);
+  const [clicked, setClicked] = useState();
+
+  const [data, setData] = useState({
+    house: "",
+    QnA_id: -1,
+    marks: -1,
+    entry_by_token: "",
+    event_id: "",
+  });
+
   let q, c, m;
   if (Q) {
     q = Q.question;
@@ -19,6 +31,23 @@ const Column = ({ Q, M, i }) => {
   if (M) {
     m = M;
   }
+
+  useEffect(() => {
+    const json = JSON.parse(localStorage.getItem("houseDetails") || "{}");
+
+    console.log(M);
+
+    if (json) {
+      setData({
+        ...data,
+        house: json.house_id,
+        QnA_id: Q.id,
+        marks: points,
+        entry_by_token: localStorage.getItem("adminToken"),
+        event_id: id,
+      });
+    }
+  }, [points]);
   console.log(Q);
   return (
     <Stack direction="column" alignItems="center" spacing={2} sx={style.main}>
@@ -49,7 +78,15 @@ const Column = ({ Q, M, i }) => {
       >
         <FormControl>
           <FormLabel id="rewards">Weightage/Score</FormLabel>
-          <RadioGroup row aria-labelledby="rewards" name="rewards">
+          <RadioGroup
+            row
+            aria-labelledby="rewards"
+            name="rewards"
+            onChange={(e) => {
+              console.log(e.target.value);
+              setPoints(parseInt(e.target.value));
+            }}
+          >
             {m.map((k) => (
               <FormControlLabel
                 value={k.marks}
@@ -67,9 +104,9 @@ const Column = ({ Q, M, i }) => {
         sx={style.container}
       >
         <TextField
+          value={points}
           hiddenLabel
           id="filled-hidden-label-normal"
-          placeholder="Marks"
           variant="filled"
         />
         <Stack direction="row" alignItems="center" spacing={2}>
@@ -87,7 +124,22 @@ const Column = ({ Q, M, i }) => {
           </IconButton>
         </Stack>
       </Stack>
-      <Button variant="contained">Submit</Button>
+      <Button
+        onClick={async () => {
+          await axios
+            .post("/record", data)
+            .then((res) => {
+              setClicked(true);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }}
+        disabled={points === -1 || clicked}
+        variant="contained"
+      >
+        {clicked ? "Submitted" : "Submit"}
+      </Button>
     </Stack>
   );
 };

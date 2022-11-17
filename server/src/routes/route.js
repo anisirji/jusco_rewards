@@ -1,5 +1,6 @@
 const { application } = require("express");
 const express = require("express");
+const pool = require("../../config/db");
 const router = new express.Router();
 
 const createCustomer = require("../routes/dataManagement/createCustomer");
@@ -44,6 +45,14 @@ router.post("/createCustomer", async (req, res) => {
 //POST RECORD TRANSACTIONS  { house, QnA_id, marks, entry_by_token, event_id }
 router.post("/record", async (req, res) => {
   const response = await transaction(req.body);
+  res.send(response);
+});
+
+router.post("/getTransData", async (req, res) => {
+  const response = await pool.execute(
+    "select t.event_id , mc.house_id , t.QnA_id , t.marks , u.username , t.entry_date from transaction_survey t left join metadata_users u on u.id = t.entry_by left join metadata_customer mc on mc.id = t.house_id"
+  );
+
   res.send(response);
 });
 
