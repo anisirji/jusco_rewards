@@ -50,12 +50,32 @@ router.post("/record", async (req, res) => {
 
 router.post("/getTransData", async (req, res) => {
   const response = await pool.execute(
-    "select t.event_id , mc.house_id , t.QnA_id , t.marks , u.username , t.entry_date from transaction_survey t left join metadata_users u on u.id = t.entry_by left join metadata_customer mc on mc.id = t.house_id"
+    `SELECT B.house_id, B.customer_name, B.mobile_no, B.address, B.zone, B.area, B.location, SUM(A.marks) "Total Marks", A.entry_date AS "Surveyed On" FROM \`transaction_survey\` AS A LEFT JOIN metadata_customer AS B ON A.house_id = B.id WHERE 1 GROUP BY A.event_id ORDER BY A.entry_date, A.id`
   );
 
   res.send(response);
 });
 
+router.get("/excelData", async (req, res) => {
+  const excelData = await pool.execute(`SELECT
+  #ROW_NUMBER() OVER(ORDER BY B.id) AS 'Sl. No.',
+  C.house_id, 
+  C.customer_name,
+  C.mobile_no,
+  max(CASE WHEN (A.question='App Usage') THEN B.marks ELSE NULL END) AS 'App Usage', 
+  max(CASE WHEN (A.question='Awareness') THEN B.marks ELSE NULL END) AS 'Awareness', 
+  max(CASE WHEN (A.question='Provision for Segregation') THEN B.marks ELSE NULL END) AS 'Provision for Segregation', 
+  max(CASE WHEN (A.question='Practices segregation at source') THEN B.marks ELSE NULL END) AS 'Practices segregation at source', 
+  max(CASE WHEN (A.question='Sanitary waste') THEN B.marks ELSE NULL END) AS 'Sanitary waste', 
+  max(CASE WHEN (A.question='Handling over segregated waste') THEN B.marks ELSE NULL END) AS 'Handling over segregated waste', 
+  max(CASE WHEN (A.question='Waste reduction initiatives') THEN B.marks ELSE NULL END) AS 'Waste reduction initiatives', 
+  max(CASE WHEN (A.question='IEC') THEN B.marks ELSE NULL END) AS 'IEC', 
+  SUM(B.marks) AS 'total_marks', 
+  DATE_FORMAT(B.entry_date, "%d-%m-%Y %h:%i:%s %p") AS 'surveyed_on' 
+  FROM metadata_QnA_list AS A LEFT JOIN transaction_survey AS B ON A.id = B.QnA_id LEFT JOIN metadata_customer AS C ON C.id= B.house_id GROUP BY B.event_id ORDER BY B.entry_date, B.event_id, A.id`);
+
+  res.send(excelData);
+});
 // router.post("/check",async (req,res)=>{
 //   const response = await readDbs("metadata_customer",{})
 // })

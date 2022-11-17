@@ -17,10 +17,14 @@ const Dashboard = () => {
   const [data, setData] = useState([]);
 
   const exportData = async () => {
+    const result = await axios.get("/excelData");
+
+    const ex_data = result.data[0];
+
     const fileType =
       "application/vnd.openxlmformats-officedocument.spreadsheetml.sheet;charset=UTF=8";
 
-    const ws = XLSX.utils.json_to_sheet(data);
+    const ws = XLSX.utils.json_to_sheet(ex_data);
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const k = new Blob([excelBuffer], {
@@ -36,6 +40,8 @@ const Dashboard = () => {
         const result = await axios.post("/getTransData", {
           table_name: "transaction_survey",
         });
+
+        console.log(result);
 
         setData(result.data[0]);
       } catch (err) {
@@ -63,23 +69,29 @@ const Dashboard = () => {
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
-            <TableCell>Q/A Id</TableCell>
-            <TableCell>Entry By</TableCell>
-            <TableCell>Entry Date</TableCell>
-            <TableCell>Event Id</TableCell>
+            <TableCell>Surveyed on</TableCell>
+            <TableCell>Total Marks</TableCell>
+            <TableCell>Address</TableCell>
+            <TableCell>Area</TableCell>
+            <TableCell>Customer Name</TableCell>
             <TableCell>House Id</TableCell>
-            <TableCell>Marks</TableCell>
+            <TableCell>Location</TableCell>
+            <TableCell>Mobile No</TableCell>
+            <TableCell>zone</TableCell>
           </TableHead>
           <TableBody>
             {data.map((k) => {
               return (
                 <TableRow>
-                  <TableCell>{k.QnA_id}</TableCell>
-                  <TableCell>{k.username}</TableCell>
-                  <TableCell>{k.entry_date}</TableCell>
-                  <TableCell>{k.event_id}</TableCell>
+                  <TableCell>{k["Surveyed On"]}</TableCell>
+                  <TableCell>{k["Total Marks"]}</TableCell>
+                  <TableCell>{k.address}</TableCell>
+                  <TableCell>{k.area}</TableCell>
+                  <TableCell>{k.customer_name}</TableCell>
                   <TableCell>{k.house_id}</TableCell>
-                  <TableCell>{k.marks}</TableCell>
+                  <TableCell>{k.location}</TableCell>
+                  <TableCell>{k.mobile_no}</TableCell>
+                  <TableCell>{k.zone}</TableCell>
                 </TableRow>
               );
             })}
