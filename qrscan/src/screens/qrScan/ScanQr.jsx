@@ -14,8 +14,9 @@ const ScanQr = () => {
   };
 
   const handleScanWebCam = (e) => {
-    // console.log(e);
-    navigate("/questions");
+    console.log(e);
+    setHouseId(e);
+    // navigate("/questions");
   };
   return (
     <div
