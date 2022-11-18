@@ -17,7 +17,9 @@ const Dashboard = () => {
   const [data, setData] = useState([]);
 
   const exportData = async () => {
-    const result = await axios.get("/excelData");
+    const result = await axios.get(
+      "https://jusco-reward.herokuapp.com/excelData"
+    );
 
     const ex_data = result.data[0];
 
@@ -33,17 +35,20 @@ const Dashboard = () => {
 
     FileSaver.saveAs(k, "data.xlsx");
   };
-
-  useEffect(() => {
+  // jusco-reward.herokuapp.com
+  https: useEffect(() => {
     const getData = async () => {
       try {
-        const result = await axios.post("/getTransData", {
-          table_name: "transaction_survey",
-        });
+        const result = await axios.post(
+          "https://jusco-reward.herokuapp.com/getTransData",
+          {
+            table_name: "transaction_survey",
+          }
+        );
 
         console.log(result);
 
-        setData(result.data[0]);
+        setData(result.data[0].reverse());
       } catch (err) {
         console.error(err);
       }
@@ -69,29 +74,31 @@ const Dashboard = () => {
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
-            <TableCell>Surveyed on</TableCell>
-            <TableCell>Total Marks</TableCell>
-            <TableCell>Address</TableCell>
-            <TableCell>Area</TableCell>
-            <TableCell>Customer Name</TableCell>
+            <TableCell>S. No</TableCell>
             <TableCell>House Id</TableCell>
-            <TableCell>Location</TableCell>
+            <TableCell>Customer Name</TableCell>
             <TableCell>Mobile No</TableCell>
+            <TableCell>Address</TableCell>
             <TableCell>zone</TableCell>
+            <TableCell>Area</TableCell>
+            <TableCell>Location</TableCell>
+            <TableCell>Total Marks</TableCell>
+            <TableCell>Surveyed on</TableCell>
           </TableHead>
           <TableBody>
             {data.map((k) => {
               return (
                 <TableRow>
-                  <TableCell>{k["Surveyed On"]}</TableCell>
-                  <TableCell>{k["Total Marks"]}</TableCell>
-                  <TableCell>{k.address}</TableCell>
-                  <TableCell>{k.area}</TableCell>
-                  <TableCell>{k.customer_name}</TableCell>
+                  <TableCell>{k["Sl. No."]}</TableCell>
                   <TableCell>{k.house_id}</TableCell>
-                  <TableCell>{k.location}</TableCell>
+                  <TableCell>{k.customer_name}</TableCell>
                   <TableCell>{k.mobile_no}</TableCell>
+                  <TableCell>{k.address}</TableCell>
                   <TableCell>{k.zone}</TableCell>
+                  <TableCell>{k.area}</TableCell>
+                  <TableCell>{k.location}</TableCell>
+                  <TableCell>{k["Total Marks"]}</TableCell>
+                  <TableCell>{k["Surveyed On"]}</TableCell>
                 </TableRow>
               );
             })}

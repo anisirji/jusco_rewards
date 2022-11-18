@@ -8,10 +8,10 @@ import IconButton from "@mui/material/IconButton";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import Stack from "@mui/material/Stack";
-import axios from "axios";
+// import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { style } from "./style";
-const Column = ({ Q, M, i, id }) => {
+const Column = ({ Q, M, i, id, setResData, obj }) => {
   const [points, setPoints] = useState(-1);
   const [clicked, setClicked] = useState();
 
@@ -33,9 +33,8 @@ const Column = ({ Q, M, i, id }) => {
   }
 
   useEffect(() => {
-    const json = JSON.parse(localStorage.getItem("houseDetails") || "{}");
-
-    console.log(M);
+    const json = JSON.parse(sessionStorage.getItem("hsData"));
+    console.log("json data" + json);
 
     if (json) {
       setData({
@@ -85,6 +84,12 @@ const Column = ({ Q, M, i, id }) => {
             onChange={(e) => {
               console.log(e.target.value);
               setPoints(parseInt(e.target.value));
+              if (data.house) {
+                const id = data.QnA_id;
+                const nObj = obj;
+                nObj[`${id}`] = data;
+                setResData((obj) => ({ ...obj, ...nObj }));
+              }
             }}
           >
             {m.map((k) => (
@@ -104,7 +109,7 @@ const Column = ({ Q, M, i, id }) => {
         sx={style.container}
       >
         <TextField
-          value={points}
+          value={points >= 0 ? points : " "}
           hiddenLabel
           id="filled-hidden-label-normal"
           variant="filled"
@@ -124,22 +129,6 @@ const Column = ({ Q, M, i, id }) => {
           </IconButton>
         </Stack>
       </Stack>
-      <Button
-        onClick={async () => {
-          await axios
-            .post("/record", data)
-            .then((res) => {
-              setClicked(true);
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        }}
-        disabled={points === -1 || clicked}
-        variant="contained"
-      >
-        {clicked ? "Submitted" : "Submit"}
-      </Button>
     </Stack>
   );
 };

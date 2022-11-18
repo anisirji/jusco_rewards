@@ -8,7 +8,7 @@ import { QrReader } from "react-qr-reader";
 import { useNavigate } from "react-router-dom";
 
 const ScanQr = () => {
-  const [houseId, setHouseId] = useState("");
+  // const [houseId, setHouseId] = useState("");
   const [scanned, setScanned] = useState("");
   const [open, setOpen] = useState(false);
   const [diaData, setDiaData] = useState({
@@ -37,15 +37,14 @@ const ScanQr = () => {
           onError={handleErrorWebCam}
         />
       </div>
+      {/* https://jusco-reward.herokuapp.com */}
       <Button
         disabled={scanned === ""}
         onClick={async () => {
           if (scanned) {
-            setHouseId("HS0035995");
-            console.log(houseId);
             let data;
             await axios
-              .post("/getSpecificData", {
+              .post("http://jusco-reward.herokuapp.com/getSpecificData", {
                 table_name: "metadata_customer",
                 condition: {
                   field: "house_id",
@@ -56,6 +55,20 @@ const ScanQr = () => {
                 if (!res.data.flag) {
                   setOpen(true);
                 } else {
+                  await axios
+                    .get(
+                      `https://dev.tsapplications.in/api/v1/amenity/${scanned}`
+                    )
+                    .then(async (res) => {
+                      let { data } = res;
+
+                      sessionStorage.setItem(
+                        "hsData",
+                        JSON.stringify(res.data)
+                      );
+                      console.log(data);
+                    });
+
                   navigate("/questions");
                 }
               })
@@ -103,17 +116,19 @@ const ScanQr = () => {
                 .get(`https://dev.tsapplications.in/api/v1/amenity/${scanned}`)
                 .then(async (res) => {
                   let { data } = res;
-                  localStorage.setItem(
-                    "houseDetails",
-                    JSON.stringify(res.data)
-                  );
 
-                  await axios.post("/createCustomer", {
-                    house_id: scanned,
-                    customer_name: diaData.name,
-                    mobile_no: diaData.phone,
-                    ...data,
-                  });
+                  sessionStorage.setItem("hsData", res.data);
+                  console.log(data);
+                  // https://jusco-reward.herokuapp.com
+                  await axios.post(
+                    "http://jusco-reward.herokuapp.com/createCustomer",
+                    {
+                      house_id: scanned,
+                      customer_name: diaData.name,
+                      mobile_no: diaData.phone,
+                      ...data,
+                    }
+                  );
                 });
             }}
           >

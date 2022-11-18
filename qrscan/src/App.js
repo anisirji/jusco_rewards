@@ -12,8 +12,8 @@ function App() {
       <img src={logo} className="img" />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/scanQr" element={<ScanQr />} />
+          <Route path="/" element={<ScanQr />} />
+          <Route path="/admin" element={<Login />} />
           <Route path="/questions" element={<BasicTable />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>

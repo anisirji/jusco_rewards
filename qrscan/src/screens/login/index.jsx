@@ -31,17 +31,19 @@ export default function () {
   };
 
   let navigate = useNavigate();
-
+  // https://jusco-reward.herokuapp.com
   const loginHandler = async (e) => {
     e.preventDefault();
-    axios.post("/login", creds).then((res) => {
-      localStorage.setItem("adminToken", res.data?.token);
-      const role = res.data.role;
-      console.log(res);
-      console.log(role);
-      if (role == "admin") navigate("/dashboard");
-      else if (role == "operator") navigate("/scanQr");
-    });
+    axios
+      .post("https://jusco-reward.herokuapp.com/login", creds)
+      .then((res) => {
+        localStorage.setItem("adminToken", res.data?.token);
+        const role = res.data.role;
+        console.log(res);
+        console.log(role);
+        if (role == "admin") navigate("/dashboard");
+        else alert("unAuthorized");
+      });
   };
 
   const mediaQuery = window.matchMedia("(max-width: 550px)");
