@@ -19,15 +19,15 @@ export default function BasicTable() {
   // https://jusco-reward.herokuapp.com
   https: useEffect(() => {
     axios
-      .post("https://jusco-reward.herokuapp.com/getAllData", {
+      .post("http://localhost:3002/getAllData", {
         table_name: "metadata_QnA_list",
       })
       .then((res) => {
-        // console.log(res.data.data + "       ------>   data ");
+        console.log(res.data.data + "       ------>   data ");
         setDataTable(res.data.data);
       });
     axios
-      .post("https://jusco-reward.herokuapp.com/getAllData", {
+      .post("http://localhost:3002/getAllData", {
         table_name: "metadata_marks",
       })
       .then((res) => {
@@ -41,7 +41,7 @@ export default function BasicTable() {
     setClicked(true);
     for (let i = 0; i < Object.keys(resData).length; i++) {
       await axios
-        .post("https://jusco-reward.herokuapp.com/record", resData[i])
+        .post("http://localhost:3002/record", resData[i])
         .then((res) => {
           setClicked(true);
         })

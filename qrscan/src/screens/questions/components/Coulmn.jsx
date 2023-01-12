@@ -11,6 +11,7 @@ import Stack from "@mui/material/Stack";
 // import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { style } from "./style";
+
 const Column = ({ Q, M, i, id, setResData, obj }) => {
   const [points, setPoints] = useState(-1);
   const [clicked, setClicked] = useState();

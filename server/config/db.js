@@ -11,4 +11,5 @@ const pool = mysql.createPool({
 //   if (error) console.log(error);
 //   else console.log(result);
 // });
+
 module.exports = pool;

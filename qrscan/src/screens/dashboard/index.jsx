@@ -39,12 +39,9 @@ const Dashboard = () => {
   https: useEffect(() => {
     const getData = async () => {
       try {
-        const result = await axios.post(
-          "https://jusco-reward.herokuapp.com/getTransData",
-          {
-            table_name: "transaction_survey",
-          }
-        );
+        const result = await axios.post("http://localhost:3002/getTransData", {
+          table_name: "transaction_survey",
+        });
 
         console.log(result);
 

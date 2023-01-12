@@ -44,7 +44,7 @@ const ScanQr = () => {
           if (scanned) {
             let data;
             await axios
-              .post("http://jusco-reward.herokuapp.com/getSpecificData", {
+              .post("http://localhost:3002/getSpecificData", {
                 table_name: "metadata_customer",
                 condition: {
                   field: "house_id",
@@ -121,7 +121,8 @@ const ScanQr = () => {
                   console.log(data);
                   // https://jusco-reward.herokuapp.com
                   await axios.post(
-                    "http://jusco-reward.herokuapp.com/createCustomer",
+                    // "https://jusco-reward.herokuapp.com/createCustomer",
+                    "http://localhost:3002/createCustomer",
                     {
                       house_id: scanned,
                       customer_name: diaData.name,
